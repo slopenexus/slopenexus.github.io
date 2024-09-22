@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<script>
+  //custom script to prevent host redirect
+  String.prototype.split = new Proxy(String.prototype.split, {
+    apply: (target, thisArgument, argumentsList) => {
+      if (argumentsList[0] === "|") {
+        thisArgument += "|" + location.host
+      }
+      return Reflect.apply(target, thisArgument, argumentsList)
+    }
+  })
+  //make fake firebase thingy
+  window.firebase = {
+    analytics: () => {
+      return {
+        logEvent: () => {}
+      }
+    }
+  }
+</script>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Slope</title>
+<link rel="shortcut icon" href="favicon.png">
+<link rel="stylesheet" href="TemplateData/style.css">
+</head>
+<body class="dark">
+<div id="unity-container" class="unity-desktop">
+<canvas id="unity-canvas"></canvas>
+</div>
+<div id="loading-cover" style="display:none;">
+<div id="unity-loading-bar">
+<canvas id="logo-canvas" style="position: absolute; background-color: black;">
+<img src="loading.png?v=1" id="ld_bg">
+<img src="loading_bg.png" id="ld_bar">
+<img src="loading_fill.png" id="ld_fill">
+</canvas>
+</div>
+</div>
+<script>
+    const container = document.querySelector("#unity-container");
+    const canvas = document.querySelector("#unity-canvas");
+    const loadingCover = document.querySelector("#loading-cover");
+    const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+
+
+
+    const buildUrl = "Build";
+    const loaderUrl = buildUrl + "/slope_240615_v1.1.loader.js";
+    const config = {
+      dataUrl: buildUrl + "/2898170e05e15cd17e0dd540020f3b60.data.unityweb",
+      frameworkUrl: buildUrl + "/a2eda61529b96bff99f6e7f2c1c8cc70.js.unityweb",
+      codeUrl: buildUrl + "/be56fcf1f8a59765402833355a67b489.wasm.unityweb",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "GM",
+      productName: "Slope",
+      productVersion: "1.1",
+    };
+
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      container.className = "unity-mobile";
+      config.devicePixelRatio = 1;
+    }
+
+    loadingCover.style.display = "";
+
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        //progressBarEmpty.style.display = "";
+        //progressBarFull.style.width = `${100 * progress}%`;
+        // console.log(progress);
+        logo_loading_percent = progress;
+        drawCanvas(progress);
+      }).then((unityInstance) => {
+        window.unityInstance = unityInstance;
+        setTimeout(() => {
+          loadingCover.style.display = "none";
+          logo_loaded = true;
+        }, 2000);
+      }).catch((message) => {
+        alert(message);
+      });
+    };
+
+    // setTimeout(() => {
+    //     var progress = 0.5;
+    //     logo_loading_percent = progress;
+    //     drawCanvas(progress);
+    //   }, 1000);
+
+    // var progress = 0;
+    // setInterval(() => {
+    //   logo_loading_percent = progress;
+    //   drawCanvas(progress);
+    //   progress += 0.01;
+    // }, 30);
+
+
+    var logo_loaded = false;
+    var logo_loading_percent = 0;
+
+    window.onresize = () => {
+      // console.log('onresize');
+      drawCanvas(logo_loading_percent);
+    }
+    window.onload = () => {
+      // console.log('onload');
+      drawCanvas(logo_loading_percent);
+    }
+
+    var logo_canvas = document.getElementById("logo-canvas");
+    function drawCanvas(_percent = 0) {
+      if (logo_loaded) {
+        return;
+      }
+      resizeLogoCanvas();
+      var ctx = logo_canvas.getContext("2d");
+      var ld_bg = document.getElementById("ld_bg");
+      var ld_bar = document.getElementById("ld_bar");
+      var ld_fill = document.getElementById("ld_fill");
+      var _sw = logo_canvas.width / 1920;
+      var _sh = logo_canvas.height / 1080;
+
+      if (_percent > 1) {
+        _percent = 1;
+      }
+
+      var pw = 1170 * _percent;
+      var pl = 375 + (1 - _percent);
+
+      // console.log(`${logo_canvas.width} ${logo_canvas.height}`);
+      ctx.drawImage(ld_bg, 0, 0, logo_canvas.width, logo_canvas.height);
+      ctx.drawImage(ld_bar, 355 * _sw, logo_canvas.height - (240 * _sh), 1210 * _sw, 48 * _sh);
+      ctx.drawImage(ld_fill, pl * _sw, logo_canvas.height - (226 * _sh), pw * _sw, 20 * _sh);
+    }
+    function resizeLogoCanvas() {
+      var _w = window.innerWidth;
+      var _h = window.innerHeight;
+      var _nw = _h * 16 / 9;
+      // console.log(`${_w} ${_h} ${_nw}`);
+      if (_nw <= _w) {
+        logo_canvas.width = _nw;
+        logo_canvas.height = _h;
+      }
+      else {
+        logo_canvas.width = _w;
+        logo_canvas.height = _w * 9 / 16;
+      }
+
+    }
+
+
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>
