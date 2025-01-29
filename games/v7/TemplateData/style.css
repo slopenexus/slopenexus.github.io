@@ -1,0 +1,123 @@
+/* Reset margins, padding, and borders */
+.webgl-content * {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Make the WebGL content fill the entire window */
+.webgl-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #222; /* Optional: background color */
+}
+
+/* Ensure the canvas or game element takes the full size of the container */
+.webgl-content canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the canvas scales to fill the space */
+}
+
+/* Center the logo, progress bar, and text within the window */
+.webgl-content .logo,
+.webgl-content .progress,
+.webgl-content .text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Logo styling */
+.webgl-content .logo {
+    background: url('/TemplateData/y8-logo.png') no-repeat center / contain;
+    width: 250px;
+    height: 250px;
+}
+
+/* Progress bar styling */
+.webgl-content .progress {
+    height: 18px;
+    width: 211px;
+    margin-top: 120px;
+}
+
+.webgl-content .progress .empty {
+    background: url('/web/20171009140000im_/http://storage.id.net/y8-studio/unity/joll/slope_builds/slope_wasm/slope_v7/TemplateData/progressEmpty.Light.png') no-repeat right / cover;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+}
+
+.webgl-content .progress .full {
+    background: url('/web/20171009140000im_/http://storage.id.net/y8-studio/unity/joll/slope_builds/slope_wasm/slope_v7/TemplateData/progressFull.Light.png') no-repeat left / cover;
+    width: 0%;
+    height: 100%;
+    display: inline-block;
+}
+
+/* Text styling */
+.webgl-content .text {
+    margin-top: 160px;
+    color: white;
+    font-family: Arial, Helvetica, Verdana, sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+/* Spinner alignment */
+.webgl-content .spinner {
+    vertical-align: middle;
+}
+
+/* Dark theme adjustments */
+.webgl-content .logo.Dark {}
+
+.webgl-content .progress.Dark .empty {
+    background: white;
+}
+
+.webgl-content .progress.Dark .full {
+    background: red;
+}
+
+/* Footer adjustments */
+.webgl-content .footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 38px;
+    line-height: 38px;
+    font-family: Helvetica, Verdana, Arial, sans-serif;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.webgl-content .footer .webgl-logo {
+    background: url('/web/20171009140000im_/http://storage.id.net/y8-studio/unity/joll/slope_builds/slope_wasm/slope_v7/TemplateData/webgl-logo.png') no-repeat center / contain;
+    width: 204px;
+    height: 100%;
+}
+
+.webgl-content .footer .title {
+    margin-right: 10px;
+}
+
+.webgl-content .footer .fullscreen {
+    background: url('/web/20171009140000im_/http://storage.id.net/y8-studio/unity/joll/slope_builds/slope_wasm/slope_v7/TemplateData/fullscreen.png') no-repeat center / contain;
+    width: 38px;
+    height: 38px;
+}

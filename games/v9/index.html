@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <script>
+      // Custom script to handle resizing and prevent console spam
+      console.warn = () => {};
+
+      // Function to resize the canvas to match the window size
+      function resizeCanvas() {
+        const canvas = document.getElementById("canvas");
+        if (canvas) {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+      }
+
+      // Add event listeners to resize the canvas on load and window resize
+      window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("load", resizeCanvas);
+    </script>
+
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Slope</title>
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script type="text/javascript" src="https://code.createjs.com/tweenjs-0.6.1.min.js"></script>
+    <script type="text/javascript" src="TemplateData/CSSPlugin.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="resize.js"></script>
+  </head>
+  <body class="template">
+    <p class="header"><span>Unity WebGL Player | </span>Slope</p>
+    <div class="template-wrap clear">
+      <canvas
+        class="emscripten"
+        id="canvas"
+        oncontextmenu="event.preventDefault()"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+      ></canvas>
+      <div class="logo" style="display: none"></div>
+      <div class="fullscreen" style="display: none">
+        <img
+          src="TemplateData/fullscreen.png"
+          width="38"
+          height="38"
+          alt="Fullscreen"
+          title="Fullscreen"
+          onclick="SetFullscreen(1);"
+        />
+      </div>
+      <div class="title" style="display: none">Slope</div>
+    </div>
+    <p class="footer">
+      &laquo; created with <a href="http://unity3d.com/" title="Go to unity3d.com">Unity</a> &raquo;
+    </p>
+    <div id="loadingBox">
+      <div id="bgBar"></div>
+      <div id="progressBar"></div>
+      <img
+        id="spinner"
+        src="TemplateData/spinner.gif"
+        style="display: none; margin: 0 auto"
+      />
+      <p id="loadingInfo">Loading...</p>
+    </div>
+
+    <script type="text/javascript">
+      // Connect to canvas and manage loading status
+      var Module = {
+        TOTAL_MEMORY: 536870912,
+        filePackagePrefixURL: "Release/",
+        memoryInitializerPrefixURL: "Release/",
+        preRun: [resizeCanvas],
+        postRun: [resizeCanvas],
+        print: (function () {
+          return function (text) {
+            console.log(text);
+          };
+        })(),
+        printErr: function (text) {
+          console.error(text);
+        },
+        canvas: document.getElementById("canvas"),
+        progress: null,
+        setStatus: function (text) {
+          if (this.progress == null) {
+            if (typeof UnityProgress != "function") return;
+            this.progress = new UnityProgress(canvas);
+          }
+          if (!Module.setStatus.last)
+            Module.setStatus.last = { time: Date.now(), text: "" };
+          if (text === Module.setStatus.text) return;
+          this.progress.SetMessage(text);
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          if (m)
+            this.progress.SetProgress(parseInt(m[2]) / parseInt(m[4]));
+          if (text === "") this.progress.Clear();
+        },
+        totalDependencies: 0,
+        monitorRunDependencies: function (left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(
+            left
+              ? "Preparing... (" +
+                  (this.totalDependencies - left) +
+                  "/" +
+                  this.totalDependencies +
+                  ")"
+              : "All downloads complete."
+          );
+        },
+      };
+      Module.setStatus("Loading WebGL Player, Please wait...");
+    </script>
+    <script src="Release/UnityConfig.js"></script>
+    <script src="Release/fileloader.js"></script>
+    <script>
+      if (!(!Math.fround)) {
+        var script = document.createElement("script");
+        script.src = "Release/slope_v9.js";
+        document.body.appendChild(script);
+      } else {
+        var codeXHR = new XMLHttpRequest();
+        codeXHR.open("GET", "Release/slope_v9.js", true);
+        codeXHR.onload = function () {
+          var code = codeXHR.responseText;
+          if (!Math.fround) {
+            try {
+              console.log("optimizing out Math.fround calls");
+              var m = /var ([^=]+)=global\.Math\.fround;/.exec(code);
+              var minified = m[1];
+              if (!minified) throw "fail";
+              var startAsm = code.indexOf("// EMSCRIPTEN_START_FUNCS");
+              var endAsm = code.indexOf("// EMSCRIPTEN_END_FUNCS");
+              var asm = code.substring(startAsm, endAsm);
+              do {
+                var moar = false; // we need to re-do, as x(x( will not be fixed
+                asm = asm.replace(
+                  new RegExp("[^a-zA-Z0-9\\$\\_]" + minified + "\\(", "g"),
+                  function (s) {
+                    moar = true;
+                    return s[0] + "(";
+                  }
+                );
+              } while (moar);
+              code =
+                code.substring(0, startAsm) +
+                asm +
+                code.substring(endAsm);
+              code = code.replace("'use asm'", "'almost asm'");
+            } catch (e) {
+              console.log("failed to optimize out Math.fround calls " + e);
+            }
+          }
+
+          var blob = new Blob([code], { type: "text/javascript" });
+          codeXHR = null;
+          var src = URL.createObjectURL(blob);
+          var script = document.createElement("script");
+          script.src = URL.createObjectURL(blob);
+          script.onload = function () {
+            URL.revokeObjectURL(script.src);
+          };
+          document.body.appendChild(script);
+        };
+        codeXHR.send(null);
+      }
+    </script>
+  </body>
+</html>

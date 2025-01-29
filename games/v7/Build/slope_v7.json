@@ -1,0 +1,11 @@
+{
+"TOTAL_MEMORY": 268435456,
+"dataUrl": "slope_v7.data.unityweb",
+"wasmCodeUrl": "slope_v7.wasm.code.unityweb",
+"wasmFrameworkUrl": "slope_v7.wasm.framework.unityweb",
+"asmCodeUrl": "slope_v7.asm.code.unityweb",
+"asmMemoryUrl": "slope_v7.asm.memory.unityweb",
+"asmFrameworkUrl": "slope_v7.asm.framework.unityweb",
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
+}
