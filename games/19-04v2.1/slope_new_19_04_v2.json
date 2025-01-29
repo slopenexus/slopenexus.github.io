@@ -1,0 +1,15 @@
+{
+"companyName": "IDnet",
+"productName": "Slope",
+"dataUrl": "slope_new_19_04_v2.data.unityweb",
+"wasmCodeUrl": "slope_new_19_04_v2.wasmcode.unityweb",
+"wasmFrameworkUrl": "slope_new_19_04_v2.wasmframework.unityweb",
+"asmCodeUrl": "slope_new_19_04_v2.code.unityweb",
+"asmMemoryUrl": "slope_new_19_04_v2.memory.unityweb",
+"asmFrameworkUrl": "slope_new_19_04_v2.framework.unityweb",
+"TOTAL_MEMORY": 268435456,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
+}

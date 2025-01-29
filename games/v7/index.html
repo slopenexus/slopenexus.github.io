@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Slope</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+        var gameInstance;
+
+        function initializeGame() {
+            gameInstance = UnityLoader.instantiate("gameContainer", "Build/slope_v7.json", {
+                onProgress: UnityProgress,
+                Module: {
+                    onRuntimeInitialized: function () {
+                        UnityProgress(gameInstance, "complete");
+                        resizeGame(); // Call resize after the game is initialized
+                    }
+                }
+            });
+        }
+
+        // Adjust the game container size dynamically
+        function resizeGame() {
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+            
+            var gameContainer = document.getElementById("gameContainer");
+            
+            // Set game container size, considering the footer height
+            gameContainer.style.width = width + "px";
+            
+        }
+
+        // Call resizeGame on window resize
+        window.onresize = resizeGame;
+
+        // Initial resize
+        window.onload = initializeGame; // Initialize game when page loads
+    </script>
+</head>
+<body>
+    <div class="webgl-content">
+        <div id="gameContainer" style="width: 100%; height: 100%;"></div>
+
+    </div>
+</body>
+</html>
