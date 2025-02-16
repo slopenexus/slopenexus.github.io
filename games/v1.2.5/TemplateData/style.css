@@ -84,13 +84,3 @@ html,body {
   height: 38px;
   background: url('fullscreen-button.png') no-repeat center
 }
-
-#unity-mobile-warning {
-  position: absolute;
-  left: 50%;
-  top: 5%;
-  transform: translate(-50%);
-  background: white;
-  padding: 10px;
-  display: none
-}
