@@ -54,11 +54,6 @@ function CompatibilityCheck()
         window.history.back();                
     }
     // Show warnings if needed.
-    else if (mobile)
-    {
-        if (!confirm("Please note that Unity WebGL is not currently supported on mobiles. Press Ok if you wish to continue anyways."))
-            window.history.back();        
-    }
     else if (browser.indexOf("Firefox") == -1 && browser.indexOf("Chrome") == -1 && browser.indexOf("Safari") == -1)
     {
         if (!confirm("Please note that your browser is not currently supported for this Unity WebGL content. Try installing Firefox, or press Ok if you wish to continue anyways."))
